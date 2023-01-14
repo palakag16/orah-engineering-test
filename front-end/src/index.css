@@ -17,3 +17,59 @@
 .app-header a {
   color: #fff;
 }
+
+.Togglebtns{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(27, 79, 144);
+  padding:0 4px;
+  margin-right: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+
+}
+.togglebox{
+  padding: 4px;
+  color:white;
+  margin: 4px;
+  padding: 4px;
+  font-size: 10px;
+}
+.toggleActive{
+  color:rgb(27, 79, 144);
+  background-color: white;
+  padding: 4px;
+  font-size: 10px;
+  border-radius: 4px;
+  
+
+}
+.sort_wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.activity_wrapper{
+  display:grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+}
+.activity_tile{
+  background-color: #343f64;;
+  color:white;
+  padding: 2rem;
+  margin:10px;
+  float:auto;
+  text-align: center;
+  cursor: pointer;
+
+}
+.activity_tile:hover{
+  background-color: rgb(27, 79, 144);
+  box-shadow: 0px 0px 15px 5px grey;
+};
+
+.searchbox input{
+ border:none;
+ outline: none;
+}

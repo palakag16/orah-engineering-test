@@ -1,17 +1,54 @@
-import React from "react"
+import React, { useContext, useState, useEffect } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
-
+import { Students } from "staff-app/app"
+import { PersonContextType } from "shared/models/person"
+import { useApi } from "shared/hooks/use-api"
+import { useNavigate } from "react-router-dom"
 export type ActiveRollAction = "filter" | "exit"
 interface Props {
   isActive: boolean
   onItemClick: (action: ActiveRollAction, value?: string) => void
 }
+interface List {
+  present: number
+  all: number
+  late: number
+  absent: number
+}
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
+  const navigate=useNavigate();
+  const { backupData } = useContext(Students) as PersonContextType
+  const [stateData, setStateData] = useState<any>({ present: 0, all: 0, late: 0, absent: 0 })
   const { isActive, onItemClick } = props
+  const [saveActiveRoll, data, loadState] = useApi({ url: "save-roll" })
+
+  useEffect(() => {
+    let obj: any = { present: 0, all: 0, late: 0, absent: 0 }
+    if(backupData){
+      for (let i of backupData) {
+        if (i.role) {
+          const temp = obj[i.role]
+          obj[i.role] = temp + 1
+        }
+      }
+    }
+    setStateData(obj)
+  }, [backupData])
+  const convertData=()=>{
+    const arr=[]
+    if(backupData){
+    for(let j of backupData){
+       arr.push({student_id:j.id,roll_state:j.role})
+    }
+    void saveActiveRoll(arr)
+    navigate("/staff/activity")
+  }
+  }
+  // student_roll_states: { student_id: number; roll_state: RolllStateType }[]
 
   return (
     <S.Overlay isActive={isActive}>
@@ -20,17 +57,20 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
         <div>
           <RollStateList
             stateList={[
-              { type: "all", count: 0 },
-              { type: "present", count: 0 },
-              { type: "late", count: 0 },
-              { type: "absent", count: 0 },
+              { type: "all", count: stateData.all },
+              { type: "present", count: stateData.present },
+              { type: "late", count: stateData.late },
+              { type: "absent", count: stateData.absent },
             ]}
           />
           <div style={{ marginTop: Spacing.u6 }}>
             <Button color="inherit" onClick={() => onItemClick("exit")}>
               Exit
             </Button>
-            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => onItemClick("exit")}>
+            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => {
+              onItemClick("exit")
+              convertData()
+              }}>
               Complete
             </Button>
           </div>
